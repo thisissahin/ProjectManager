@@ -70,6 +70,7 @@ public class ProjectAddUser extends AppCompatActivity {
                             newUser.clear();
                             newUser.put("user",currentUserId);
                             projetDatabase.setValue(newUser);
+
                         }
                     }
 
