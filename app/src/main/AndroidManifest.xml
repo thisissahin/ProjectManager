@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Projects.Tasks.TaskAdd"></activity>
+        <activity android:name=".Projects.Requests.RequestActivity"></activity>
+        <activity android:name=".Projects.Tasks.TaskAdd" />
         <activity android:name=".Projects.Tasks.MainTaskActivity" />
         <activity android:name=".Projects.ProjectAddUser" />
         <activity android:name=".Notes.MainNoteActivity" />

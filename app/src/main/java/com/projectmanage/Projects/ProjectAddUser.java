@@ -62,14 +62,11 @@ public class ProjectAddUser extends AppCompatActivity {
 
                             String userKey = postSnapshot.getKey();
                             usernameTextView.setText(userKey);
-                            DatabaseReference userDatabase =FirebaseDatabase.getInstance().getReference().child("Users").child(userKey).child("Projects").child(projectKey);
+                            DatabaseReference userDatabase =FirebaseDatabase.getInstance().getReference().child("Users").child(userKey).child("Projects").child("Requests").child(projectKey);
                             Map newUser = new HashMap();
-                            newUser.put("createdBy",currentUserId);
+                            newUser.put("requestFrom",currentUserId);
                             userDatabase.setValue(newUser);
-                            DatabaseReference projetDatabase =FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Users").push();
-                            newUser.clear();
-                            newUser.put("user",currentUserId);
-                            projetDatabase.setValue(newUser);
+
 
                         }
                     }

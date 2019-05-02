@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.projectmanage.Notes.MainNoteActivity;
+import com.projectmanage.Projects.Requests.RequestActivity;
 import com.projectmanage.Settings.SettingsActivity;
 import com.projectmanage.Projects.ProjectActivity;
 
@@ -57,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentN = new Intent(MainActivity.this, MainNoteActivity.class);
                 startActivity(intentN);
                 return true;
+
+            case R.id.requests:
+                Intent intentR = new Intent(MainActivity.this, RequestActivity.class);
+                startActivity(intentR);
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);

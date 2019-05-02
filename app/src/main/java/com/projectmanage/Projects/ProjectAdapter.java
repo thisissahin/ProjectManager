@@ -33,7 +33,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_user, parent, false);
+                .inflate(R.layout.item_projects, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -46,8 +46,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = null;
-                name = dataSnapshot.getValue().toString();
-                holder.myTextView.setText(name);
+                if (dataSnapshot.exists()){
+                    name = dataSnapshot.getValue().toString();
+                    holder.myTextView.setText(name);
+                }
+
 
             }
 
