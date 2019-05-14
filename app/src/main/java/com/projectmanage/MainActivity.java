@@ -2,6 +2,8 @@ package com.projectmanage;
 
 
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +13,10 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.projectmanage.Notes.FragmentNoteActivity;
 import com.projectmanage.Notes.MainNoteActivity;
+import com.projectmanage.Projects.FragmentProjectActivity;
+import com.projectmanage.Projects.Requests.FragmentRequestActivity;
 import com.projectmanage.Projects.Requests.RequestActivity;
 import com.projectmanage.Settings.SettingsActivity;
 import com.projectmanage.Projects.ProjectActivity;
@@ -19,13 +24,23 @@ import com.projectmanage.Projects.ProjectActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        tabLayout = findViewById(R.id.mainTab);
+        viewPager = findViewById(R.id.viewPager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        adapter.AddFragment(new FragmentRequestActivity(), "Requests");
+        adapter.AddFragment(new FragmentProjectActivity(),"Projects");
+        adapter.AddFragment(new FragmentNoteActivity(),"Notes");
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
 
 
     }
