@@ -8,12 +8,12 @@ import android.widget.TextView;
 import com.projectmanage.R;
 
 
-public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView mNoteText;
     public TextView mNoteDate;
 
-    public TaskViewHolder(View itemView) {
+    public NoteViewHolder(View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
         mNoteText = itemView.findViewById(R.id.noteText);

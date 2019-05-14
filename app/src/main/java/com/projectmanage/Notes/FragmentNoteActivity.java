@@ -109,7 +109,7 @@ public class FragmentNoteActivity extends Fragment {
                     }
                     if (note != null) {
 
-                        TaskObject newMessage = new TaskObject(note, key, date);
+                        NoteObject newMessage = new NoteObject(note, key, date);
                         resualtsNote.add(newMessage);
                         mNoteAdapter.notifyDataSetChanged();
                     }
@@ -139,9 +139,9 @@ public class FragmentNoteActivity extends Fragment {
             }
         });
     }
-    private ArrayList<TaskObject> resualtsNote = new ArrayList<>();
+    private ArrayList<NoteObject> resualtsNote = new ArrayList<>();
 
-    private List<TaskObject> getDataSetChat() {
+    private List<NoteObject> getDataSetChat() {
         return resualtsNote;
     }
 }

@@ -1,13 +1,13 @@
 package com.projectmanage.Notes;
 
 
-public class TaskObject {
+public class NoteObject {
 
     private String note;
     private String noteKey;
     private String date;
 
-    public TaskObject(String note, String noteKey, String date) {
+    public NoteObject(String note, String noteKey, String date) {
         this.note = note;
         this.noteKey = noteKey;
         this.date = date;

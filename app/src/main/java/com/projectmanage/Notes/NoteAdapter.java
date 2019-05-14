@@ -24,14 +24,14 @@ import java.util.List;
 
 
 
-public class NoteAdapter extends RecyclerView.Adapter<TaskViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
-    private List<TaskObject> noteList;
+    private List<NoteObject> noteList;
     private Context context;
     private String currentUserId;
 
 
-    public NoteAdapter(List<TaskObject> noteList, Context context) {
+    public NoteAdapter(List<NoteObject> noteList, Context context) {
         this.noteList = noteList;
         this.context = context;
     }
@@ -40,19 +40,19 @@ public class NoteAdapter extends RecyclerView.Adapter<TaskViewHolder> {
 
     @NonNull
     @Override
-    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card,null);
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutView.setLayoutParams(lp);
-        TaskViewHolder rcv = new TaskViewHolder((layoutView));
+        NoteViewHolder rcv = new NoteViewHolder((layoutView));
         return rcv;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final TaskViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final NoteViewHolder holder, final int position) {
 
         holder.mNoteDate.setText(noteList.get(position).getDate());
         holder.mNoteText.setText(noteList.get(position).getNote());
