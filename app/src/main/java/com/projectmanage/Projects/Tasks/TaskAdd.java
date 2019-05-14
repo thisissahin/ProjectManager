@@ -10,10 +10,8 @@ import android.view.MenuItem;
 
 import android.widget.EditText;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.projectmanage.Notes.MainNoteActivity;
 import com.projectmanage.R;
 
 import java.text.SimpleDateFormat;
@@ -89,6 +87,8 @@ public class TaskAdd extends AppCompatActivity {
                 Intent i = new Intent(TaskAdd.this, MainTaskActivity.class);
                 i.putExtra("projectKey",projectKey);
                 startActivity(i);
+                finish();
+
 
 
 

@@ -81,9 +81,8 @@ public class NoteAdd extends AppCompatActivity {
                 newMessage.put("date",date);
 
                 newMessageDb.setValue(newMessage);
-                Intent i = new Intent(NoteAdd.this, MainNoteActivity.class);
-                i.putExtra("key",key);
-                startActivity(i);
+                finish();
+
 
 
 

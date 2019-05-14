@@ -55,6 +55,7 @@ public class ProjectAdd extends AppCompatActivity {
                     newMessage.clear();
                     newMessage.put("createdBy",currentUserId);
                     newMessageDb.setValue(newMessage);
+                    finish();
                 }
             }
         });

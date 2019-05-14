@@ -129,8 +129,7 @@ public class NoteActivity extends AppCompatActivity {
 
         else if(id == R.id.action_delete){
             delete(key);
-            Intent i = new Intent(NoteActivity.this, MainNoteActivity.class);
-            startActivity(i);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
