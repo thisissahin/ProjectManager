@@ -38,6 +38,8 @@ public class TaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -51,6 +53,7 @@ public class TaskActivity extends AppCompatActivity {
             taskKey= (String) savedInstanceState.getSerializable("taskKey");
             projectKey= (String) savedInstanceState.getSerializable("projectKey");
         }
+
         mSharedPrefManager = new SharedPreferencesManager(this);
 
         taskUpdateEdit = findViewById(R.id.taskEditText);
@@ -61,7 +64,7 @@ public class TaskActivity extends AppCompatActivity {
         taskUpdateEdit.setTextSize(mSharedPrefManager.getVariable());
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Notes");
+        mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks");
 
         mDatabaseTask.child(taskKey).addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -94,6 +97,11 @@ public class TaskActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+
+        if(id == android.R.id.home) {
+            finish();
+            return true;
+        }
 
         if (id == R.id.action_edit && editFocusable == false) {
             editFocusable = true;
@@ -134,15 +142,13 @@ public class TaskActivity extends AppCompatActivity {
 
         else if(id == R.id.action_delete){
             delete(taskKey);
-            Intent i = new Intent(TaskActivity.this, MainTaskActivity.class);
-            i.putExtra("projectKey",projectKey);
-            startActivity(i);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void delete(String taskKey){
-        DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Notes").child(taskKey);
+        DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child(taskKey);
         deletedNote.removeValue();
 
     }

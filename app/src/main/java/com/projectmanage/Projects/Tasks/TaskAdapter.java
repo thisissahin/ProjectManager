@@ -63,6 +63,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
                 Intent i = new Intent(context, TaskActivity.class);
                 i.putExtra("taskKey",taskKey);
                 i.putExtra("projectKey",projectKey);
+
                 context.startActivity(i);
 
 
@@ -105,9 +106,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
         return taskList.size();
     }
 
-    //fix this
     public void delete(String key,String projectKey){
-        DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Notes").child(key);
+        DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child(key);
         deletedNote.removeValue();
 
     }

@@ -38,6 +38,22 @@ public class FragmentNoteActivity extends Fragment {
     public FragmentNoteActivity() {
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        resualtsNote.clear();
+        getNoteList();
+        mNoteAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        resualtsNote.clear();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,8 +69,6 @@ public class FragmentNoteActivity extends Fragment {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabaseNote = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Notes");
 
-
-
         mDatabaseNote.keepSynced(true);
 
         actionButton = v.findViewById(R.id.fab);
@@ -63,13 +77,15 @@ public class FragmentNoteActivity extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NoteAdd.class);
                 startActivity(intent);
+                resualtsNote.clear();
+                mNoteAdapter.notifyDataSetChanged();
 
             }
         });
 
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setHasFixedSize(false);
+
 
         int orientation = getActivity().getResources().getConfiguration().orientation;
 
@@ -85,9 +101,6 @@ public class FragmentNoteActivity extends Fragment {
         mNoteAdapter = new NoteAdapter(getDataSetChat(), getActivity());
         mRecyclerView.setAdapter(mNoteAdapter);
 
-        resualtsNote.clear();
-        getNoteList();
-        mNoteAdapter.notifyDataSetChanged();
 
 
     }
@@ -112,6 +125,8 @@ public class FragmentNoteActivity extends Fragment {
                         NoteObject newMessage = new NoteObject(note, key, date);
                         resualtsNote.add(newMessage);
                         mNoteAdapter.notifyDataSetChanged();
+
+
                     }
                 }
 
@@ -120,13 +135,13 @@ public class FragmentNoteActivity extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                mNoteAdapter.notifyDataSetChanged();
+
 
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                mNoteAdapter.notifyDataSetChanged();
+                mNoteAdapter.notifyItemRemoved(resualtsNote.size());
 
             }
 

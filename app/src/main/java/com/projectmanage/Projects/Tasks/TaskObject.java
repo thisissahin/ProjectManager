@@ -5,12 +5,16 @@ public class TaskObject {
     private String taskKey;
     private String projectKey;
     private String date;
+    private String projectName;
 
-    public TaskObject(String task, String taskKey, String date,String projectKey) {
+
+
+    public TaskObject(String task, String taskKey, String date, String projectKey, String projectName) {
         this.task = task;
         this.taskKey = taskKey;
         this.date = date;
         this.projectKey = projectKey;
+        this.projectName = projectName;
     }
     public String getProjectKey() {
         return projectKey;
@@ -41,5 +45,12 @@ public class TaskObject {
 
     public void setTaskKey(String taskKey) {
         this.taskKey = taskKey;
+    }
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }

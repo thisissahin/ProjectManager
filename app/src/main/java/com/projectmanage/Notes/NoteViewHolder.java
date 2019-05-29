@@ -1,11 +1,11 @@
 package com.projectmanage.Notes;
 
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
+        import android.support.v7.widget.RecyclerView;
+        import android.view.View;
+        import android.widget.TextView;
 
-import com.projectmanage.R;
+        import com.projectmanage.R;
 
 
 public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

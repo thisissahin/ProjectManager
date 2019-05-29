@@ -27,6 +27,7 @@ public class FragmentRequestActivity extends Fragment {
     private String currentUserId;
     private String requestFrom;
     private String projectKey;
+    private String projectName;
 
     public FragmentRequestActivity() {
     }
@@ -45,7 +46,7 @@ public class FragmentRequestActivity extends Fragment {
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child("Requests");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Requests");
 
 
 
@@ -53,6 +54,8 @@ public class FragmentRequestActivity extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new RequestAdapter(requests, getActivity());
         recyclerView.setAdapter(adapter);
+        requests.clear();
+        adapter.notifyDataSetChanged();
         getRequestList();
 
     }
@@ -64,7 +67,8 @@ public class FragmentRequestActivity extends Fragment {
 
                     projectKey = dataSnapshot.getKey();
                     requestFrom = dataSnapshot.child("requestFrom").getValue().toString();
-                    RequestObject newMessage = new RequestObject(projectKey,requestFrom);
+                    projectName = dataSnapshot.child("projectName").getValue().toString();
+                    RequestObject newMessage = new RequestObject(projectKey,requestFrom,projectName);
 
                     requests.add(newMessage);
                     adapter.notifyDataSetChanged();

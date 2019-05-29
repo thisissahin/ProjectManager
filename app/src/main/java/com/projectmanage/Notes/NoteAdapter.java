@@ -34,7 +34,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     public NoteAdapter(List<NoteObject> noteList, Context context) {
         this.noteList = noteList;
         this.context = context;
+
     }
+
+
 
 
 
@@ -64,6 +67,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                 Intent i = new Intent(context, NoteActivity.class);
                 i.putExtra("key",editKey);
                 context.startActivity(i);
+                noteList.clear();
+                notifyDataSetChanged();
 
 
             }
@@ -84,6 +89,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
                             delete(key);
                             noteList.remove(position);
+                            notifyDataSetChanged();
                         }
 
 
@@ -104,6 +110,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     public int getItemCount() {
         return noteList.size();
     }
+
 
     public void delete(String key){
         DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Notes").child(key);

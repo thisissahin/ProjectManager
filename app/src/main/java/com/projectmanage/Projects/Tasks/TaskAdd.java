@@ -46,7 +46,7 @@ public class TaskAdd extends AppCompatActivity {
 
         }
         else {
-            mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Notes");
+            mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks");
         }
 
 
@@ -84,9 +84,8 @@ public class TaskAdd extends AppCompatActivity {
                 newMessage.put("date",date);
 
                 newMessageDb.setValue(newMessage);
-                Intent i = new Intent(TaskAdd.this, MainTaskActivity.class);
-                i.putExtra("projectKey",projectKey);
-                startActivity(i);
+
+
                 finish();
 
 

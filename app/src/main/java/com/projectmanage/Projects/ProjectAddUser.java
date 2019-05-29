@@ -24,8 +24,8 @@ import java.util.Map;
 public class ProjectAddUser extends AppCompatActivity {
     EditText userAddEditText;
     Button userAddButton;
-    TextView usernameTextView;
     String projectKey;
+    String projectName;
     String currentUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +35,18 @@ public class ProjectAddUser extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
                 projectKey= null;
+                projectName= null;
             } else {
                 projectKey= extras.getString("projectKey");
+                projectName= extras.getString("projectName");
             }
         } else {
             projectKey= (String) savedInstanceState.getSerializable("projectKey");
+            projectName= (String) savedInstanceState.getSerializable("projectName");
         }
 
         userAddEditText = findViewById(R.id.userAddEditText);
         userAddButton = findViewById(R.id.userAddButton);
-        usernameTextView = findViewById(R.id.usernameTextView);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -61,11 +63,12 @@ public class ProjectAddUser extends AppCompatActivity {
                         {
 
                             String userKey = postSnapshot.getKey();
-                            usernameTextView.setText(userKey);
-                            DatabaseReference userDatabase =FirebaseDatabase.getInstance().getReference().child("Users").child(userKey).child("Projects").child("Requests").child(projectKey);
+                            DatabaseReference userDatabase =FirebaseDatabase.getInstance().getReference().child("Users").child(userKey).child("Requests").child(projectKey);
                             Map newUser = new HashMap();
                             newUser.put("requestFrom",currentUserId);
+                            newUser.put("projectName",projectName);
                             userDatabase.setValue(newUser);
+                            finish();
 
 
                         }

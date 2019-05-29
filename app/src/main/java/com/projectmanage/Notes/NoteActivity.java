@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.projectmanage.MainActivity;
 import com.projectmanage.R;
 import com.projectmanage.Settings.SharedPreferencesManager;
 
@@ -36,6 +37,7 @@ public class NoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -89,6 +91,10 @@ public class NoteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        if(id == android.R.id.home) {
+            finish();
+            return true;
+        }
 
         if (id == R.id.action_edit && editFocusable == false) {
             editFocusable = true;

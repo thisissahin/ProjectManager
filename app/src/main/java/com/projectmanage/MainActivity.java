@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.projectmanage.Notes.FragmentNoteActivity;
 import com.projectmanage.Projects.FragmentProjectActivity;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Toolbar toolBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,14 +40,11 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.AddFragment(new FragmentRequestActivity(), "Requests");
-        adapter.AddFragment(new FragmentProjectActivity(),"Projects");
-        adapter.AddFragment(new FragmentNoteActivity(),"Notes");
+        adapter.AddFragment(new FragmentProjectActivity(), "Projects");
+        adapter.AddFragment(new FragmentNoteActivity(), "Notes");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-
-
     }
-
 
 
     @Override
@@ -52,11 +52,13 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
-    @Override    public boolean onOptionsItemSelected(MenuItem item) {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.quit:
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 return true;
 
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentS = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intentS);
                 return true;
-
 
 
             default:
@@ -77,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
-
-
-
 
 
 }

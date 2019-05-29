@@ -15,72 +15,52 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.projectmanage.Notes.NoteViewHolder;
 import com.projectmanage.Projects.Tasks.MainTaskActivity;
 import com.projectmanage.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
+public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHolder> {
 
-    private ArrayList<ProjectObject> mData;
+    private List<ProjectObject> mData;
     private Context context;
 
-    public ProjectAdapter(ArrayList<ProjectObject> mData, Context context) {
+    public ProjectAdapter(List<ProjectObject> mData, Context context) {
         this.mData = mData;
         this.context = context;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ProjectViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_projects, parent, false);
-        return new ViewHolder(itemView);
+        return new ProjectViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ProjectViewHolder holder, final int position) {
         String projectKey = mData.get(position).getProjectKey();
-
-        DatabaseReference mDatabaseNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("name");
-        mDatabaseNote.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String name = null;
-                if (dataSnapshot.exists()){
-                    name = dataSnapshot.getValue().toString();
-                    holder.myTextView.setText(name);
-                }
+        String projectName = mData.get(position).getProjectName();
+        holder.mProjectName.setText(projectName);
 
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        holder.myTextView.setOnClickListener(new View.OnClickListener() {
+        holder.mProjectName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String projectName = mData.get(position).getProjectName();
                 String projectKey = mData.get(position).getProjectKey();
-                Toast.makeText(context,projectKey,Toast.LENGTH_LONG).show();
                 Intent i = new Intent(context, MainTaskActivity.class);
-                i.putExtra("projectKey",projectKey);
+                i.putExtra("projectKey", projectKey);
+                i.putExtra("projectName", projectName);
                 context.startActivity(i);
+
+
 
             }
         });
-        holder.myTextView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                String projectKey = mData.get(position).getProjectKey();
-                Intent i = new Intent(context,ProjectAddUser.class);
-                i.putExtra("projectKey",projectKey);
-                context.startActivity(i);
-                return true;
-            }
-        });
+
 
     }
 
@@ -90,21 +70,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView myTextView;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-
-
-            myTextView = itemView.findViewById(R.id.userText);
-
-        }
-
-
-    }
-
-
-
-
 }
+
+
+
