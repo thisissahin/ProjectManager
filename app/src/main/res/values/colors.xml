@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#FF9800</color>
     <color name="colorAccent">#F44336</color>
     <color name="colorItemBackround">#DDDDDD</color>
+    <color name="colorSmokeWhite">#FDFDFD</color>
 </resources>

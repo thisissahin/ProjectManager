@@ -70,7 +70,7 @@ public class TaskActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String data = dataSnapshot.child("text").getValue().toString();
+                String data = dataSnapshot.child("note").getValue().toString();
                 taskUpdateEdit.setText(data);
 
 
@@ -125,7 +125,7 @@ public class TaskActivity extends AppCompatActivity {
         else if(id == R.id.action_edit && editFocusable == true){
             String text = taskUpdateEdit.getText().toString();
 
-            mDatabaseTask.child(taskKey).child("text").setValue(text);
+            mDatabaseTask.child(taskKey).child("note").setValue(text);
 
             item.setIcon(R.drawable.baseline_edit_white_18dp);
             View view = this.getCurrentFocus();

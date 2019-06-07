@@ -13,9 +13,6 @@ import android.widget.PopupMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.projectmanage.Notes.NoteActivity;
-import com.projectmanage.Projects.Tasks.TaskObject;
-import com.projectmanage.Projects.Tasks.TaskViewHolder;
 import com.projectmanage.R;
 
 import java.util.List;
@@ -52,9 +49,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final TaskViewHolder holder, final int position) {
 
-        holder.mTaskDate.setText(taskList.get(position).getDate());
-        holder.mTaskText.setText(taskList.get(position).getTask());
-        holder.mTaskText.setOnClickListener(new View.OnClickListener() {
+        //holder.mTaskDate.setText(taskList.get(position).getDate());
+        holder.mTaskTitle.setText(taskList.get(position).getTitle());
+        holder.mTaskTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -69,7 +66,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
 
             }
         });
-        holder.mTaskText.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.mTaskTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 

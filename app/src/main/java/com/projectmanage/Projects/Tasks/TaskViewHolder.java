@@ -8,14 +8,12 @@ import com.projectmanage.R;
 
 class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView mTaskText;
-    public TextView mTaskDate;
+    public TextView mTaskTitle;
 
     public TaskViewHolder(View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
-        mTaskText = itemView.findViewById(R.id.projectTaskText);
-        mTaskDate = itemView.findViewById(R.id.projectTaskDate);
+        mTaskTitle = itemView.findViewById(R.id.projectTaskTitle);
 
 
     }

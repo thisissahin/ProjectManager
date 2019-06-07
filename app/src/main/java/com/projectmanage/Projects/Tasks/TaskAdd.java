@@ -2,7 +2,6 @@ package com.projectmanage.Projects.Tasks;
 
 
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,14 +21,15 @@ import java.util.Map;
 
 
 public class TaskAdd extends AppCompatActivity {
-    private EditText taskEdit;
+    private EditText taskNoteEdit;
+    private EditText taskTitleEdit;
+    private EditText taskCheckListEdit;
     DatabaseReference mDatabaseTask;
-    private String currentUserId;
     private String projectKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task);
+        setContentView(R.layout.activity_taskadd);
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -54,8 +54,9 @@ public class TaskAdd extends AppCompatActivity {
 
 
 
-
-        taskEdit = findViewById(R.id.taskEditText);
+        taskTitleEdit = findViewById(R.id.taskTitleEditText);
+        taskCheckListEdit = findViewById(R.id.taskCheckListEdit);
+        taskNoteEdit = findViewById(R.id.taskNoteEditText);
 
     }
 
@@ -73,15 +74,17 @@ public class TaskAdd extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_done ) {
-            String note = taskEdit.getText().toString();
+            String note = taskNoteEdit.getText().toString();
+            String title = taskTitleEdit.getText().toString();
 
-            if(!note.isEmpty()){
+            if(!title.isEmpty()){
                 DatabaseReference newMessageDb = mDatabaseTask.push();
 
                 Map newMessage = new HashMap();
                 String date = new SimpleDateFormat("MMM dd HH:mm").format(Calendar.getInstance().getTime());
-                newMessage.put("text",note);
+                newMessage.put("note",note);
                 newMessage.put("date",date);
+                newMessage.put("title",title);
 
                 newMessageDb.setValue(newMessage);
 
@@ -93,7 +96,7 @@ public class TaskAdd extends AppCompatActivity {
 
             }
 
-            taskEdit.setText(null);
+            taskNoteEdit.setText(null);
         }
         return super.onOptionsItemSelected(item);
 

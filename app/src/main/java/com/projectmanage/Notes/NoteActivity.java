@@ -115,6 +115,8 @@ public class NoteActivity extends AppCompatActivity {
 
 
         }
+
+
         else if(id == R.id.action_edit && editFocusable == true){
             String text = noteUpdateEdit.getText().toString();
 

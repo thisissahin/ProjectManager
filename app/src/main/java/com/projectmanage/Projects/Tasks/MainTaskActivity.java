@@ -104,7 +104,7 @@ public class MainTaskActivity extends AppCompatActivity {
         int orientation = MainTaskActivity.this.getResources().getConfiguration().orientation;
 
         if(orientation==1){
-            mTaskLayoutManager = new GridLayoutManager(MainTaskActivity.this,2);
+            mTaskLayoutManager = new GridLayoutManager(MainTaskActivity.this,1);
 
         }
         if(orientation==2) {
@@ -123,20 +123,23 @@ public class MainTaskActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 if (dataSnapshot.exists()) {
-                    String task = null;
+                    String title = null;
                     String date = null;
                     String taskKey = dataSnapshot.getKey();
 
-                    if (dataSnapshot.child("text").getValue() != null) {
-                        task = dataSnapshot.child("text").getValue().toString();
+                    if (dataSnapshot.child("title").getValue() != null) {
+                        title = dataSnapshot.child("title").getValue().toString();
                     }
 
                     if (dataSnapshot.child("date").getValue() != null) {
                         date = dataSnapshot.child("date").getValue().toString();
                     }
-                    if (task != null) {
 
-                        TaskObject newMessage = new TaskObject(task, taskKey, date,projectKey,projectName);
+
+
+                    if (title != null) {
+
+                        TaskObject newMessage = new TaskObject(title, taskKey, date,projectKey,projectName);
                         resualtsTask.add(newMessage);
                         mTaskAdapter.notifyDataSetChanged();
                     }

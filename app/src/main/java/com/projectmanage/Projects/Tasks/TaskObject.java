@@ -1,7 +1,7 @@
 package com.projectmanage.Projects.Tasks;
 
 public class TaskObject {
-    private String task;
+    private String title;
     private String taskKey;
     private String projectKey;
     private String date;
@@ -9,8 +9,8 @@ public class TaskObject {
 
 
 
-    public TaskObject(String task, String taskKey, String date, String projectKey, String projectName) {
-        this.task = task;
+    public TaskObject(String title, String taskKey, String date, String projectKey, String projectName) {
+        this.title = title;
         this.taskKey = taskKey;
         this.date = date;
         this.projectKey = projectKey;
@@ -31,12 +31,12 @@ public class TaskObject {
         this.date = date;
     }
 
-    public String getTask() {
-        return task;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTask(String task) {
-        this.task = task;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getTaskKey() {
