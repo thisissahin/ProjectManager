@@ -84,11 +84,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                                         projetDatabase.setValue(newUser);
                                         DatabaseReference deleteRequest = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Requests").child(requestKey);
                                         deleteRequest.removeValue();
+                                        mData.remove(position);
+                                        notifyDataSetChanged();
                                     }
                                     else {
                                         Toast.makeText(context,"This project is deleted!",Toast.LENGTH_SHORT).show();
                                         DatabaseReference deleteRequest = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Requests").child(requestKey);
                                         deleteRequest.removeValue();
+                                        notifyDataSetChanged();
                                     }
                                 }
 
@@ -100,8 +103,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
                         }
                         if (item.getItemId()==(R.id.decline)){
-                            DatabaseReference deleteRequest = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child("Requests").child(requestKey);
+                            DatabaseReference deleteRequest = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Requests").child(requestKey);
                             deleteRequest.removeValue();
+                            mData.remove(position);
+                            notifyDataSetChanged();
                         }
 
                         return true;

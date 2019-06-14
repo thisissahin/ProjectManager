@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:padding="20dp"
         >
 
 
@@ -21,11 +20,13 @@
         <TextView
             android:id="@+id/projectTaskTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Empty"
             android:textSize="15sp"
             android:maxLines="5"
             android:textColor="#000"
+            android:padding="20dp"
+
             />
     </LinearLayout>
 

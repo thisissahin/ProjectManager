@@ -27,6 +27,10 @@ public class ProjectAddUser extends AppCompatActivity {
     String projectKey;
     String projectName;
     String currentUserId;
+    DatabaseReference mFirebaseDatabaseReference;
+    Query query;
+    ValueEventListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +58,10 @@ public class ProjectAddUser extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String userName = userAddEditText.getText().toString();
-                final DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-                Query query = mFirebaseDatabaseReference.child("Users").orderByChild("Username").equalTo(userName);
-                query.addValueEventListener(new ValueEventListener() {
+                mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                query = mFirebaseDatabaseReference.child("Users").orderByChild("Username").equalTo(userName);
+
+                query.addValueEventListener( listener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
@@ -68,7 +73,12 @@ public class ProjectAddUser extends AppCompatActivity {
                             newUser.put("requestFrom",currentUserId);
                             newUser.put("projectName",projectName);
                             userDatabase.setValue(newUser);
+                            newUser.clear();
                             finish();
+
+
+
+
 
 
                         }
@@ -82,9 +92,15 @@ public class ProjectAddUser extends AppCompatActivity {
 
 
 
-
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFirebaseDatabaseReference.removeEventListener(listener);
+        query.removeEventListener(listener);
     }
 }

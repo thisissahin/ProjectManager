@@ -4,18 +4,21 @@ package com.projectmanage.Projects.Tasks;
 
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,15 +27,28 @@ import com.google.firebase.database.ValueEventListener;
 import com.projectmanage.R;
 import com.projectmanage.Settings.SharedPreferencesManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class TaskActivity extends AppCompatActivity {
     DatabaseReference mDatabaseTask;
-    private String currentUserId;
-    private EditText taskUpdateEdit;
-    private Boolean editFocusable;
+    DatabaseReference mDatabaseCheckList;
+
+    private EditText taskNoteEdit;
+    private EditText taskTitleEdit;
+    private ImageView checkListButton;
+    private EditText taskCheckListEdit;
     private String taskKey;
     private String projectKey;
+    private String currentUserId;
     SharedPreferencesManager mSharedPrefManager;
+    private RecyclerView.LayoutManager mLayoutManager;
+    RecyclerView recyclerView;
+    CheckListAdapter adapter;
+    private ArrayList<CheckListObject> checkListTexts = new ArrayList<>();
+    private ArrayList<String> checkList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,23 +72,46 @@ public class TaskActivity extends AppCompatActivity {
 
         mSharedPrefManager = new SharedPreferencesManager(this);
 
-        taskUpdateEdit = findViewById(R.id.taskEditText);
-        editFocusable = false;
-        taskUpdateEdit.setFocusable(false);
-        taskUpdateEdit.setFocusableInTouchMode(false);
-        taskUpdateEdit.setClickable(false);
-        taskUpdateEdit.setTextSize(mSharedPrefManager.getVariable());
+        taskNoteEdit = findViewById(R.id.taskNoteEditText);
+        taskTitleEdit = findViewById(R.id.taskTitleEditText);
+       // taskNoteEdit.setTextSize(mSharedPrefManager.getVariable());
+        checkListButton = findViewById(R.id.taskCheckImage);
+        taskCheckListEdit = findViewById(R.id.taskCheckListEdit);
+
+        setRecyclerView();
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks");
+        mDatabaseCheckList = mDatabaseTask.child(taskKey).child("checkList");
+
+        checkListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String checkListText = taskCheckListEdit.getText().toString();
+
+                if(!checkListText.isEmpty()) {
+                    DatabaseReference pushdata = mDatabaseCheckList.push();
+                    Map newCheck = new HashMap();
+                    newCheck.put("text",checkListText);
+                    pushdata.setValue(newCheck);
+                    newCheck.clear();
+                }
+            }
+        });
+
+
 
         mDatabaseTask.child(taskKey).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String data = dataSnapshot.child("note").getValue().toString();
-                taskUpdateEdit.setText(data);
+                String note = dataSnapshot.child("note").getValue().toString();
+                String title = dataSnapshot.child("title").getValue().toString();
 
+                taskTitleEdit.setText(title);
+                taskNoteEdit.setText(note);
+
+                getCheckList();
 
             }
 
@@ -86,9 +125,55 @@ public class TaskActivity extends AppCompatActivity {
 
 
     }
+
+    public void getCheckList(){
+        mDatabaseCheckList.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(dataSnapshot.exists()){
+                    String text = null;
+                    String key = dataSnapshot.getKey();
+
+                    if (dataSnapshot.child("text").getValue() != null) {
+                        text = dataSnapshot.child("text").getValue().toString();
+                        CheckListObject newMessage = new CheckListObject(text);
+                        checkListTexts.add(newMessage);
+                        adapter.notifyDataSetChanged();
+                    }
+
+
+
+
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.note_menu, menu);
+        getMenuInflater().inflate(R.menu.task_menu, menu);
         return super.onCreateOptionsMenu(menu);
 
     }
@@ -103,40 +188,11 @@ public class TaskActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_edit && editFocusable == false) {
-            editFocusable = true;
+        if (id == R.id.action_edit) {
 
-
-            taskUpdateEdit.setFocusable(true);
-            taskUpdateEdit.setFocusableInTouchMode(true);
-            taskUpdateEdit.setClickable(true);
-            taskUpdateEdit.setShowSoftInputOnFocus(true);
-            item.setIcon(R.drawable.baseline_done_white_18dp);
-            taskUpdateEdit.requestFocus();
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
-
-
-
-
-
-        }
-        else if(id == R.id.action_edit && editFocusable == true){
-            String text = taskUpdateEdit.getText().toString();
-
+            String text = taskNoteEdit.getText().toString();
             mDatabaseTask.child(taskKey).child("note").setValue(text);
-
-            item.setIcon(R.drawable.baseline_edit_white_18dp);
-            View view = this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-            editFocusable = false;
-            taskUpdateEdit.setFocusable(false);
-            taskUpdateEdit.setFocusableInTouchMode(false);
-            taskUpdateEdit.setClickable(false);
+            finish();
 
         }
 
@@ -153,6 +209,19 @@ public class TaskActivity extends AppCompatActivity {
 
     }
 
+
+    public void setRecyclerView(){
+
+        recyclerView = findViewById(R.id.taskCheckListRcy);
+        mLayoutManager =  new LinearLayoutManager(TaskActivity.this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
+        adapter = new CheckListAdapter(checkListTexts, TaskActivity.this);
+        recyclerView.setAdapter(adapter);
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),((LinearLayoutManager) mLayoutManager).getOrientation());
+        recyclerView.addItemDecoration(mDividerItemDecoration);
+
+    }
 
 
 

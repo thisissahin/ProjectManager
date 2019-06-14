@@ -67,8 +67,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                 Intent i = new Intent(context, NoteActivity.class);
                 i.putExtra("key",editKey);
                 context.startActivity(i);
-                noteList.clear();
-                notifyDataSetChanged();
+                //noteList.clear();
+                //notifyDataSetChanged();
 
 
             }

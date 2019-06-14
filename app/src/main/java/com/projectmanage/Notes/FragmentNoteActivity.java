@@ -77,8 +77,8 @@ public class FragmentNoteActivity extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NoteAdd.class);
                 startActivity(intent);
-                resualtsNote.clear();
-                mNoteAdapter.notifyDataSetChanged();
+               // resualtsNote.clear();
+               // mNoteAdapter.notifyDataSetChanged();
 
             }
         });
