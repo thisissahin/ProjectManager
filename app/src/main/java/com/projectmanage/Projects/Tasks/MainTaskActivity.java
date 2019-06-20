@@ -23,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.ValueEventListener;
-import com.projectmanage.Projects.ProjectAdd;
 import com.projectmanage.Projects.ProjectAddUser;
 import com.projectmanage.R;
 
@@ -209,7 +208,7 @@ public class MainTaskActivity extends AppCompatActivity {
                 deletedNote.removeValue();
                 finish();
                 return true;
-            case R.id.userAdd:
+            case R.id.memberAdd:
                 Intent i = new Intent(MainTaskActivity.this, ProjectAddUser.class);
                 i.putExtra("projectKey",projectKey);
                 i.putExtra("projectName",projectName);

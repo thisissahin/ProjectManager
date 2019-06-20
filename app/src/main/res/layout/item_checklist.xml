@@ -13,17 +13,17 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_gravity="center"
+        android:id="@+id/checkBox"
         />
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="text1"
+        android:layout_height="match_parent"
         android:background="@null"
         android:textSize="17sp"
         android:id="@+id/checkListText"
-        android:paddingVertical="5dp"/>
+        android:paddingVertical="5dp"
+        />
 
 
 </LinearLayout>

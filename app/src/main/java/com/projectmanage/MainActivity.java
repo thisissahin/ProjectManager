@@ -2,6 +2,7 @@ package com.projectmanage;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         toolBar = findViewById(R.id.toolBar);
+        toolBar.setTitleTextColor(Color.parseColor("#FFFFFF"));
+        toolBar.setSubtitleTextColor(Color.parseColor("#FFFFFF"));
         setSupportActionBar(toolBar);
         tabLayout = findViewById(R.id.mainTab);
         viewPager = findViewById(R.id.viewPager);
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.AddFragment(new FragmentRequestActivity(), "Requests");
         adapter.AddFragment(new FragmentProjectActivity(), "Projects");
         adapter.AddFragment(new FragmentNoteActivity(), "Notes");
+        tabLayout.setTabTextColors( Color.parseColor("#e0e0e0"),Color.parseColor("#FFFFFF") );
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
     }

@@ -77,14 +77,12 @@ public class FragmentNoteActivity extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NoteAdd.class);
                 startActivity(intent);
-               // resualtsNote.clear();
-               // mNoteAdapter.notifyDataSetChanged();
+
 
             }
         });
 
-        mRecyclerView = v.findViewById(R.id.recyclerView);
-        mRecyclerView.setNestedScrollingEnabled(false);
+
 
 
         int orientation = getActivity().getResources().getConfiguration().orientation;
@@ -97,6 +95,9 @@ public class FragmentNoteActivity extends Fragment {
             mNoteLayoutManager = new GridLayoutManager(getActivity(),4);
 
         }
+
+        mRecyclerView = v.findViewById(R.id.recyclerView);
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(mNoteLayoutManager);
         mNoteAdapter = new NoteAdapter(getDataSetChat(), getActivity());
         mRecyclerView.setAdapter(mNoteAdapter);

@@ -2,6 +2,7 @@ package com.projectmanage.Projects.Tasks;
 
 
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,6 +22,7 @@ import com.projectmanage.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,6 @@ public class TaskAdd extends AppCompatActivity {
     RecyclerView recyclerView;
     CheckListAdapter adapter;
     private ArrayList<CheckListObject> checkListTexts = new ArrayList<>();
-    private ArrayList<String> checkList = new ArrayList<>();
 
 
 
@@ -80,16 +81,26 @@ public class TaskAdd extends AppCompatActivity {
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),((LinearLayoutManager) mLayoutManager).getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
 
+
         checkListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String checkListText = taskCheckListEdit.getText().toString();
+                final String checkListText = taskCheckListEdit.getText().toString();
+                taskCheckListEdit.setText("");
+                final Boolean checkBoxBool = false;
 
                 if(!checkListText.isEmpty()) {
-                    CheckListObject newMessage = new CheckListObject(checkListText);
-                    checkListTexts.add(newMessage);
-                    checkList.add(checkListText);
-                    adapter.notifyDataSetChanged();
+
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            CheckListObject newMessage = new CheckListObject(checkListText, checkBoxBool, null);
+                            checkListTexts.add(0, newMessage);
+                            adapter.notifyDataSetChanged();
+                            recyclerView.smoothScrollToPosition(0);
+
+                        }
+                    });
                 }
             }
         });
@@ -111,6 +122,25 @@ public class TaskAdd extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_done ) {
+
+            adapter.notifyDataSetChanged();
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    taskAdd();
+                }
+            }, 500);
+
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    public void taskAdd(){
+
+
+
             String note = taskNoteEdit.getText().toString();
             String title = taskTitleEdit.getText().toString();
 
@@ -128,12 +158,13 @@ public class TaskAdd extends AppCompatActivity {
                 DatabaseReference mDatabaseCheckList = FirebaseDatabase.getInstance().getReference().child("Projects")
                         .child(projectKey).child("Tasks").child(pushKey).child("checkList");
 
-                if(!checkList.isEmpty()) {
-                    for (int i = 0; i < checkList.size(); i++) {
-
+                if(!checkListTexts.isEmpty()) {
+                    for (int i = 0; i< checkListTexts.size(); i++) {
                         DatabaseReference pushdata = mDatabaseCheckList.push();
                         Map newCheck = new HashMap();
-                        newCheck.put("text",checkList.get(i));
+                        Collections.reverse(checkListTexts);
+                        newCheck.put("text",checkListTexts.get(i).getCheckListText());
+                        newCheck.put("checkBox",checkListTexts.get(i).getCheckBoxBool());
                         pushdata.setValue(newCheck);
                         newCheck.clear();
                     }
@@ -146,10 +177,9 @@ public class TaskAdd extends AppCompatActivity {
             }
 
             taskNoteEdit.setText(null);
-        }
-        return super.onOptionsItemSelected(item);
 
     }
+
 }
 
 

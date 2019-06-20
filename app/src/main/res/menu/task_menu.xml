@@ -10,7 +10,7 @@
         android:title="done"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_edit"
+        android:id="@+id/action_done"
         android:icon="@drawable/baseline_done_white_18dp"
         android:title="done"
         app:showAsAction="always" />

@@ -88,11 +88,12 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String checkListText = taskCheckListEdit.getText().toString();
-
+                taskCheckListEdit.setText("");
                 if(!checkListText.isEmpty()) {
                     DatabaseReference pushdata = mDatabaseCheckList.push();
                     Map newCheck = new HashMap();
                     newCheck.put("text",checkListText);
+                    newCheck.put("checkBox",false);
                     pushdata.setValue(newCheck);
                     newCheck.clear();
                 }
@@ -131,14 +132,23 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.exists()){
-                    String text = null;
-                    String key = dataSnapshot.getKey();
+                    final String text;
+                    final String key = dataSnapshot.getKey();
+                    final Boolean checkBoxBool;
 
                     if (dataSnapshot.child("text").getValue() != null) {
+                        checkBoxBool = (Boolean) dataSnapshot.child("checkBox").getValue();
                         text = dataSnapshot.child("text").getValue().toString();
-                        CheckListObject newMessage = new CheckListObject(text);
-                        checkListTexts.add(newMessage);
-                        adapter.notifyDataSetChanged();
+
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                CheckListObject newMessage = new CheckListObject(text, checkBoxBool, key );
+                                checkListTexts.add(0, newMessage);
+                                adapter.notifyDataSetChanged();
+                                recyclerView.smoothScrollToPosition(0);
+                            }
+                        });
                     }
 
 
@@ -150,7 +160,7 @@ public class TaskActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -184,31 +194,36 @@ public class TaskActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == android.R.id.home) {
+            //adapter.updateList(projectKey,taskKey);
             finish();
             return true;
         }
 
-        if (id == R.id.action_edit) {
+        if (id == R.id.action_done) {
 
-            String text = taskNoteEdit.getText().toString();
-            mDatabaseTask.child(taskKey).child("note").setValue(text);
+            String note = taskNoteEdit.getText().toString();
+            String title = taskTitleEdit.getText().toString();
+            mDatabaseTask.child(taskKey).child("note").setValue(note);
+            mDatabaseTask.child(taskKey).child("title").setValue(title);
+            adapter.updateList(projectKey,taskKey);
             finish();
-
         }
 
         else if(id == R.id.action_delete){
-            delete(taskKey);
+            DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").
+                    child(projectKey).child("Tasks").child(taskKey);
+            deletedNote.removeValue();
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void delete(String taskKey){
-        DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child(taskKey);
-        deletedNote.removeValue();
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //adapter.updateList(projectKey,taskKey);
+        finish();
     }
-
 
     public void setRecyclerView(){
 
