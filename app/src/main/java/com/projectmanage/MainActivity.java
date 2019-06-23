@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         toolBar = findViewById(R.id.toolBar);
         toolBar.setTitleTextColor(Color.parseColor("#FFFFFF"));
         toolBar.setSubtitleTextColor(Color.parseColor("#FFFFFF"));
+
         setSupportActionBar(toolBar);
         tabLayout = findViewById(R.id.mainTab);
         viewPager = findViewById(R.id.viewPager);
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabTextColors( Color.parseColor("#e0e0e0"),Color.parseColor("#FFFFFF") );
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+
     }
 
 

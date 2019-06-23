@@ -32,6 +32,14 @@ public class FragmentRequestActivity extends Fragment {
     public FragmentRequestActivity() {
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        requests.clear();
+        adapter.notifyDataSetChanged();
+        getRequestList();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,9 +62,7 @@ public class FragmentRequestActivity extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new RequestAdapter(requests, getActivity());
         recyclerView.setAdapter(adapter);
-        requests.clear();
-        adapter.notifyDataSetChanged();
-        getRequestList();
+
 
     }
     private void getRequestList() {

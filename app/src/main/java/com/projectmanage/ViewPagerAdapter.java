@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentListTitles = new ArrayList<>();
+    Toolbar toolbar;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -30,6 +32,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
+
         return fragmentListTitles.get(position);
     }
 

@@ -72,7 +72,6 @@ public class FragmentProjectActivity extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ProjectAdd.class);
                 startActivity(intent);
-                projectNames.clear();
                 adapter.notifyDataSetChanged();
             }
         });
@@ -117,7 +116,7 @@ public class FragmentProjectActivity extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -129,7 +128,6 @@ public class FragmentProjectActivity extends Fragment {
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                adapter.notifyDataSetChanged();
             }
 
             @Override

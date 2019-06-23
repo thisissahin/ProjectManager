@@ -30,6 +30,7 @@ public class ProjectAddUser extends AppCompatActivity {
     DatabaseReference mFirebaseDatabaseReference;
     Query query;
     ValueEventListener listener;
+    Boolean clicked= false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class ProjectAddUser extends AppCompatActivity {
                 final String userName = userAddEditText.getText().toString();
                 mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
                 query = mFirebaseDatabaseReference.child("Users").orderByChild("Username").equalTo(userName);
+                clicked = true;
 
                 query.addValueEventListener( listener = new ValueEventListener() {
                     @Override
@@ -75,7 +77,8 @@ public class ProjectAddUser extends AppCompatActivity {
                             userDatabase.setValue(newUser);
                             newUser.clear();
                             finish();
-
+                            mFirebaseDatabaseReference.removeEventListener(listener);
+                            query.removeEventListener(listener);
 
 
 
@@ -98,9 +101,17 @@ public class ProjectAddUser extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        mFirebaseDatabaseReference.removeEventListener(listener);
-        query.removeEventListener(listener);
+        if(clicked == true){
+
+        }
+
     }
 }

@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="User Name" />
+            android:hint="UserName" />
+
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatButton
@@ -26,7 +27,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/colorWhite"
         android:layout_marginBottom="4dp"
         android:padding="12dp"
         android:text="Add"/>
