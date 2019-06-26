@@ -11,34 +11,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Projects.Tasks.TaskAdd" />
-        <activity android:name=".Projects.Tasks.MainTaskActivity" />
-        <activity android:name=".Projects.ProjectAddUser" />
-        <activity android:name=".Projects.ProjectAdd" />
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activities.Projects.Tasks.TaskAdd" />
+        <activity android:name=".Activities.Projects.Tasks.MainTaskActivity" />
+        <activity android:name=".Activities.Projects.ProjectAddUser" />
+        <activity android:name=".Activities.Projects.ProjectAdd" />
+        <activity android:name=".Activities.MainActivity"
             android:theme="@style/NoBarAppTheme"
         />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".Activities.SignUpActivity" />
         <activity
-            android:name=".Notes.NoteActivity"
+            android:name=".Activities.Notes.NoteActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Projects.Tasks.TaskActivity"
+            android:name=".Activities.Projects.Tasks.TaskInfoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Notes.NoteAdd"
+            android:name=".Activities.Notes.NoteAdd"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".Settings.SettingsActivity" />
+        <activity android:name=".Activities.Settings.SettingsActivity" />
     </application>
 
 </manifest>
