@@ -79,13 +79,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
             public boolean onLongClick(View v) {
 
                 final PopupMenu popupMenu = new PopupMenu(context,v);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
+                popupMenu.getMenuInflater().inflate(R.menu.note_popup_menu,popupMenu.getMenu());
                 popupMenu.show();
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
 
-                        if(item.getItemId() == (R.id.delete)){
+                        if(item.getItemId() == (R.id.noteDelete)){
                             String key = noteList.get(position).getNoteKey();
 
                             delete(key);

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/moveToOpen"
+        android:title="Move To Open"
+        />
+
+    <item
+        android:id="@+id/moveToActive"
+        android:title="Move To Active"
+        />
+
+    <item
+        android:id="@+id/moveToCompleted"
+        android:title="Move To Completed"
+        />
+
+    <item
+        android:id="@+id/delete"
+        android:title="Delete"/>
+
+</menu>

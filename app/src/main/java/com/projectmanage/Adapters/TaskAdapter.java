@@ -50,42 +50,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onBindViewHolder(@NonNull final TaskViewHolder holder, final int position) {
 
-        //holder.mTaskDate.setText(taskList.get(position).getDate());
         holder.mTaskTitle.setText(taskList.get(position).getTitle());
-        /*
 
-        holder.mTaskTitle.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-                final PopupMenu popupMenu = new PopupMenu(context,v);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        if(item.getItemId() == (R.id.delete)){
-                            String key = taskList.get(position).getTaskKey();
-                            String projectKey = taskList.get(position).getProjectKey();
-                            delete(key,projectKey);
-                            taskList.remove(position);
-                        }
-
-
-                        return true;
-                    }
-
-                });
-
-                return true;
-            }
-
-        });
-*/
 
     }
-    public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView mTaskTitle;
         OnTaskListener onTaskListener;
@@ -96,6 +65,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             mTaskTitle = itemView.findViewById(R.id.projectTaskTitle);
             this.onTaskListener = onTaskListener;
             mTaskTitle.setOnClickListener(this);
+            mTaskTitle.setOnLongClickListener(this);
 
 
         }
@@ -105,10 +75,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         public void onClick(View view) {
             onTaskListener.onTaskClick(getAdapterPosition());
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+            onTaskListener.onTaskLongClick(getAdapterPosition(),view);
+            return true;
+        }
     }
 
     public interface OnTaskListener{
         void onTaskClick(int position);
+        void onTaskLongClick(int position,View v);
     }
 
     @Override
@@ -116,11 +93,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return taskList.size();
     }
 
-    public void delete(String key,String projectKey){
-        DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child(key);
-        deletedNote.removeValue();
 
-    }
 
 
 }

@@ -9,8 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -18,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.projectmanage.Adapters.TaskAdapter;
 import com.projectmanage.Models.TaskObject;
 import com.projectmanage.R;
@@ -40,12 +43,7 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
     DatabaseReference mDatabaseTask;
     private String currentUserId;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        resualtsTask.clear();
-        getNoteList();
-    }
+
 
     @Nullable
     @Override
@@ -95,6 +93,8 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
                 intent.putExtra("taskState","Completed");
                 startActivity(intent);
 
+
+
             }
         });
 
@@ -115,6 +115,9 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
         mRecyclerView.setLayoutManager(mTaskLayoutManager);
         mTaskAdapter = new TaskAdapter(getDataSetChat(), getActivity(),this);
         mRecyclerView.setAdapter(mTaskAdapter);
+        resualtsTask.clear();
+        getNoteList();
+        mTaskAdapter.notifyDataSetChanged();
     }
     private void getNoteList() {
         mDatabaseTask.addChildEventListener(new ChildEventListener() {
@@ -150,7 +153,7 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                mTaskAdapter.notifyDataSetChanged();
+
 
             }
 
@@ -167,6 +170,38 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
+        });
+    }
+
+    public void moveTaskTo(String taskKey, String toPath, final int position) {
+        final DatabaseReference databaseFromPath = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Completed").child(taskKey);
+        final DatabaseReference databaseToPath = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child(toPath).child(taskKey);
+
+        databaseFromPath.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                databaseToPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        databaseFromPath.removeValue();
+                        resualtsTask.remove(position);
+                        mTaskAdapter.notifyDataSetChanged();
+
+                    }
+
+
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+
         });
     }
 
@@ -187,5 +222,40 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
         i.putExtra("projectKey",projectKey);
         i.putExtra("taskState","Completed");
         startActivity(i);
+    }
+
+    @Override
+    public void onTaskLongClick(final int position, View v) {
+        final PopupMenu popupMenu = new PopupMenu(getActivity(),v);
+        popupMenu.getMenuInflater().inflate(R.menu.task_popup_menu,popupMenu.getMenu());
+        popupMenu.getMenu().findItem(R.id.moveToCompleted).setVisible(false);
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String key = resualtsTask.get(position).getTaskKey();
+                String projectKey = resualtsTask.get(position).getProjectKey();
+
+                if (item.getItemId() == (R.id.delete)) {
+
+                    DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Completed").child(key);
+                    deletedNote.removeValue();
+                    resualtsTask.remove(position);
+                }
+
+                if(item.getItemId() == (R.id.moveToOpen)){
+                    moveTaskTo(key,"Open",position);
+                }
+
+                if(item.getItemId() == (R.id.moveToActive)){
+                    moveTaskTo(key,"Active",position);
+                }
+
+
+                return true;
+            }
+
+
+        });
     }
 }

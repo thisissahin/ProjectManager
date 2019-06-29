@@ -59,7 +59,6 @@ public class ProjectAddUser extends AppCompatActivity {
                 final String userName = userAddEditText.getText().toString();
                 mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
                 query = mFirebaseDatabaseReference.child("Users").orderByChild("Username").equalTo(userName);
-                clicked = true;
 
                 query.addValueEventListener( listener = new ValueEventListener() {
                     @Override
@@ -107,9 +106,7 @@ public class ProjectAddUser extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(clicked == true){
 
-        }
 
     }
 }

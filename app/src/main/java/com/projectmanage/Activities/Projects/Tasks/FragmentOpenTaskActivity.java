@@ -8,9 +8,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,25 +44,57 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
 
     DatabaseReference mDatabaseTask;
     private String currentUserId;
+    private static final String TAG = "MyTag";
+
+    //TODO On Activity created call every time fix this
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop");
+
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        resualtsTask.clear();
-        getNoteList();
-        checkProjectExist();
+        Log.d(TAG,"onStart");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume");
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy");
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_task,container,false);
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         View v = getView();
+        Log.d(TAG,"onAcCreated");
 
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -98,6 +133,7 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
                 intent.putExtra("taskState","Open");
                 startActivity(intent);
 
+
             }
         });
 
@@ -105,24 +141,25 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setHasFixedSize(false);
 
-        int orientation = getActivity().getResources().getConfiguration().orientation;
 
-        if(orientation==1){
             mTaskLayoutManager = new GridLayoutManager(getActivity(),1);
 
-        }
-        if(orientation==2) {
-            mTaskLayoutManager = new GridLayoutManager(getActivity(),4);
 
-        }
         mRecyclerView.setLayoutManager(mTaskLayoutManager);
         mTaskAdapter = new TaskAdapter(getDataSetChat(), getActivity(),this);
         mRecyclerView.setAdapter(mTaskAdapter);
+        resualtsTask.clear();
+        getNoteList();
+        mTaskAdapter.notifyDataSetChanged();
+
+
     }
     private void getNoteList() {
         mDatabaseTask.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+
 
                 if (dataSnapshot.exists()) {
                     String title = null;
@@ -148,12 +185,12 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
                 }
 
 
+
             }
 
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                mTaskAdapter.notifyDataSetChanged();
 
             }
 
@@ -194,9 +231,9 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
         });
     }
 
-    public void moveFirebaseRecord(String fromPath, String toPath) {
-        DatabaseReference databaseFromPath = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child(projectKey);
-        final DatabaseReference databaseToPath = null;
+    public void moveTaskTo(String taskKey, String toPath, final int position) {
+        final DatabaseReference databaseFromPath = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Open").child(taskKey);
+        final DatabaseReference databaseToPath = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child(toPath).child(taskKey);
 
         databaseFromPath.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -204,14 +241,13 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 databaseToPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        if (databaseError != null) {
+                            databaseFromPath.removeValue();
+                            resualtsTask.remove(position);
+                            mTaskAdapter.notifyDataSetChanged();
 
-                        }
-                        else {
-
-                        }
                     }
 
 
@@ -234,6 +270,7 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
     }
 
 
+
     @Override
     public void onTaskClick(int position) {
         String taskKey = resualtsTask.get(position).getTaskKey();
@@ -244,4 +281,40 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
         i.putExtra("taskState","Open");
         startActivity(i);
     }
+
+    @Override
+    public void onTaskLongClick(final int position, View v) {
+        final PopupMenu popupMenu = new PopupMenu(getActivity(),v);
+        popupMenu.getMenuInflater().inflate(R.menu.task_popup_menu,popupMenu.getMenu());
+        popupMenu.getMenu().findItem(R.id.moveToOpen).setVisible(false);
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String key = resualtsTask.get(position).getTaskKey();
+                String projectKey = resualtsTask.get(position).getProjectKey();
+
+                if (item.getItemId() == (R.id.delete)) {
+
+                    DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Open").child(key);
+                    deletedNote.removeValue();
+                    resualtsTask.remove(position);
+                }
+
+                if(item.getItemId() == (R.id.moveToActive)){
+                    moveTaskTo(key,"Active",position);
+                }
+
+                if(item.getItemId() == (R.id.moveToCompleted)){
+                    moveTaskTo(key,"Completed",position);
+                }
+
+
+                return true;
+            }
+
+
+        });
+    }
+
 }
