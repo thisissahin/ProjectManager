@@ -71,6 +71,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
 
 
+
         @Override
         public void onClick(View view) {
             onTaskListener.onTaskClick(getAdapterPosition());
@@ -81,6 +82,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             onTaskListener.onTaskLongClick(getAdapterPosition(),view);
             return true;
         }
+    }
+
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
     }
 
     public interface OnTaskListener{

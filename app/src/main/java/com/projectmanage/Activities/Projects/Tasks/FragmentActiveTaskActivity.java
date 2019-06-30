@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +26,8 @@ import com.projectmanage.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.OnTaskListener {
 
@@ -93,6 +94,8 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
                 Intent intent = new Intent(getActivity(), TaskAdd.class);
                 intent.putExtra("projectKey",projectKey);
                 intent.putExtra("taskState","Active");
+                intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
+
                 startActivity(intent);
 
 
@@ -101,78 +104,47 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
         });
 
         mRecyclerView = v.findViewById(R.id.projectTaskRecyclerView);
-        mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setHasFixedSize(false);
-
-        int orientation = getActivity().getResources().getConfiguration().orientation;
-
-        if(orientation==1){
-            mTaskLayoutManager = new GridLayoutManager(getActivity(),1);
-
-        }
-        if(orientation==2) {
-            mTaskLayoutManager = new GridLayoutManager(getActivity(),4);
-
-        }
-        mRecyclerView.setLayoutManager(mTaskLayoutManager);
-        mTaskAdapter = new TaskAdapter(getDataSetChat(), getActivity(),this);
-        mRecyclerView.setAdapter(mTaskAdapter);
-        resualtsTask.clear();
-        getNoteList();
-        mTaskAdapter.notifyDataSetChanged();
+        setRecyclerView();
+        updateUi();
 
     }
-    private void getNoteList() {
-        mDatabaseTask.addChildEventListener(new ChildEventListener() {
+    private void getNoteList(){
+
+        mDatabaseTask.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                resualtsTask.clear();
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    if (dataSnapshot.exists()) {
+                        String title = null;
+                        String date = null;
+                        String taskKey = data.getKey();
 
-                if (dataSnapshot.exists()) {
-                    String title = null;
-                    String date = null;
-                    String taskKey = dataSnapshot.getKey();
+                        if (data.child("title").getValue() != null) {
+                            title = data.child("title").getValue().toString();
+                        }
 
-                    if (dataSnapshot.child("title").getValue() != null) {
-                        title = dataSnapshot.child("title").getValue().toString();
+                        if (data.child("date").getValue() != null) {
+                            date = data.child("date").getValue().toString();
+                        }
+
+                        if (title != null) {
+
+                            TaskObject newMessage = new TaskObject(title, taskKey, date,projectKey,projectName);
+                            resualtsTask.add(newMessage);
+                            mTaskAdapter.notifyDataSetChanged();
+                        }
                     }
 
-                    if (dataSnapshot.child("date").getValue() != null) {
-                        date = dataSnapshot.child("date").getValue().toString();
-                    }
-
-
-
-                    if (title != null) {
-
-                        TaskObject newMessage = new TaskObject(title, taskKey, date,projectKey,projectName);
-                        resualtsTask.add(newMessage);
-                        mTaskAdapter.notifyDataSetChanged();
-                    }
                 }
-
-
-            }
-
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                mTaskAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+
     }
 
     public void moveTaskTo(String taskKey, String toPath, final int position) {
@@ -223,6 +195,8 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
         i.putExtra("taskKey",taskKey);
         i.putExtra("projectKey",projectKey);
         i.putExtra("taskState","Active");
+        i.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
+
         startActivity(i);
     }
 
@@ -263,5 +237,20 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
 
 
         });
+    }
+
+    public void updateUi(){
+        resualtsTask.clear();
+        getNoteList();
+        mTaskAdapter.notifyDataSetChanged();
+    }
+
+    public void setRecyclerView(){
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setHasFixedSize(false);
+        mTaskLayoutManager = new GridLayoutManager(getActivity(),1);
+        mRecyclerView.setLayoutManager(mTaskLayoutManager);
+        mTaskAdapter = new TaskAdapter(getDataSetChat(), getActivity(),this);
+        mRecyclerView.setAdapter(mTaskAdapter);
     }
 }

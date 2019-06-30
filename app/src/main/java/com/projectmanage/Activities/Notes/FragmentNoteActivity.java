@@ -25,6 +25,8 @@ import com.projectmanage.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class FragmentNoteActivity extends Fragment {
     private FirebaseAuth mAuth;
     private FloatingActionButton actionButton;
@@ -78,6 +80,7 @@ public class FragmentNoteActivity extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NoteAdd.class);
+                intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
 
 
@@ -87,16 +90,10 @@ public class FragmentNoteActivity extends Fragment {
 
 
 
-        int orientation = getActivity().getResources().getConfiguration().orientation;
 
-        if(orientation==1){
-            mNoteLayoutManager = new GridLayoutManager(getActivity(),2);
+        mNoteLayoutManager = new GridLayoutManager(getActivity(),2);
 
-        }
-        if(orientation==2) {
-            mNoteLayoutManager = new GridLayoutManager(getActivity(),4);
 
-        }
 
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.setNestedScrollingEnabled(false);

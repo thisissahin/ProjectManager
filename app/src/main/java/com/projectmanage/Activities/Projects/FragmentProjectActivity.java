@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.database.ValueEventListener;
 import com.projectmanage.Adapters.ProjectAdapter;
 import com.projectmanage.Models.ProjectObject;
 import com.projectmanage.R;
@@ -41,17 +43,15 @@ public class FragmentProjectActivity extends Fragment {
     public FragmentProjectActivity() {
     }
 
+    private static final String TAG = "MyProjectTag";
+
 
     @Override
     public void onStart() {
         super.onStart();
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        projectNames.clear();
-        getProjectList();
-        adapter.notifyDataSetChanged();
+        Log.d(TAG,"onStart");
+
     }
-
-
 
     @Nullable
     @Override
@@ -62,7 +62,7 @@ public class FragmentProjectActivity extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.d(TAG,"onAcCreated");
         View v = getView();
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -85,66 +85,59 @@ public class FragmentProjectActivity extends Fragment {
         adapter = new ProjectAdapter(getDataSetChat(), getActivity());
         recyclerView.setAdapter(adapter);
         mLayoutManager =  new LinearLayoutManager(getContext());
-
-
-
-
         DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),((LinearLayoutManager) mLayoutManager).getOrientation());
         recyclerView.addItemDecoration(mDividerItemDecoration);
+        updateUi();
 
     }
 
-    private void getProjectList() {
+
+    private void getProjectList(){
         mDatabaseProject = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects");
         mDatabaseProject.keepSynced(true);
-        mDatabaseProject.addChildEventListener(new ChildEventListener() {
+        mDatabaseProject.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                projectNames.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (dataSnapshot.exists()) {
 
-                            projectKey = dataSnapshot.getKey();
-                            if(projectKey !=null){
-                                projectName = dataSnapshot.child("projectName").getValue().toString();
-                                ProjectObject newMessage = new ProjectObject(projectKey,projectName);
+                        projectKey = data.getKey();
+                        if(projectKey !=null){
+                            projectName = data.child("projectName").getValue().toString();
+                            ProjectObject newMessage = new ProjectObject(projectKey,projectName);
+                            projectNames.add(newMessage);
+                            adapter.notifyDataSetChanged();
+                        }
 
-                                projectNames.add(newMessage);
-                                adapter.notifyDataSetChanged();
-                            }
-
+                    }
                 }
-
-            }
-
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                adapter.notifyDataSetChanged();
-
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
-
-
     }
+
+
+
+
+
+
 
     private ArrayList<ProjectObject> projectNames = new ArrayList<>();
 
     private List<ProjectObject> getDataSetChat() {
         return projectNames;
+    }
+
+    public void updateUi(){
+        projectNames.clear();
+        getProjectList();
+        adapter.notifyDataSetChanged();
     }
 
 }

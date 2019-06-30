@@ -92,6 +92,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                                         Toast.makeText(context,"This project is deleted!",Toast.LENGTH_SHORT).show();
                                         DatabaseReference deleteRequest = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Requests").child(requestKey);
                                         deleteRequest.removeValue();
+                                        mData.remove(position);
                                         notifyDataSetChanged();
                                     }
                                 }

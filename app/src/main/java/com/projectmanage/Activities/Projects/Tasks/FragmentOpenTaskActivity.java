@@ -17,7 +17,6 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +29,8 @@ import com.projectmanage.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.OnTaskListener {
 
     public FragmentOpenTaskActivity(){}
@@ -41,52 +42,17 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
     private RecyclerView.LayoutManager mTaskLayoutManager;
     private String projectKey;
     private String projectName;
-
     DatabaseReference mDatabaseTask;
     private String currentUserId;
     private static final String TAG = "MyTag";
 
-    //TODO On Activity created call every time fix this
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG,"onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG,"onStop");
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG,"onStart");
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG,"onResume");
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG,"onDestroy");
-
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_task,container,false);
+
 
     }
 
@@ -121,8 +87,7 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
             mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Open");
         }
 
-        mDatabaseTask.keepSynced(true);
-
+        mRecyclerView = v.findViewById(R.id.projectTaskRecyclerView);
 
         actionButton = v.findViewById(R.id.projectTaskFab);
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -131,97 +96,51 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
                 Intent intent = new Intent(getActivity(), TaskAdd.class);
                 intent.putExtra("projectKey",projectKey);
                 intent.putExtra("taskState","Open");
+                intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
 
 
             }
         });
 
-        mRecyclerView = v.findViewById(R.id.projectTaskRecyclerView);
-        mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setHasFixedSize(false);
+        setRecyclerView();
+
+        updateUi();
 
 
-            mTaskLayoutManager = new GridLayoutManager(getActivity(),1);
-
-
-        mRecyclerView.setLayoutManager(mTaskLayoutManager);
-        mTaskAdapter = new TaskAdapter(getDataSetChat(), getActivity(),this);
-        mRecyclerView.setAdapter(mTaskAdapter);
-        resualtsTask.clear();
-        getNoteList();
-        mTaskAdapter.notifyDataSetChanged();
 
 
     }
-    private void getNoteList() {
-        mDatabaseTask.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+    private void getNoteList(){
 
-
-                if (dataSnapshot.exists()) {
-                    String title = null;
-                    String date = null;
-                    String taskKey = dataSnapshot.getKey();
-
-                    if (dataSnapshot.child("title").getValue() != null) {
-                        title = dataSnapshot.child("title").getValue().toString();
-                    }
-
-                    if (dataSnapshot.child("date").getValue() != null) {
-                        date = dataSnapshot.child("date").getValue().toString();
-                    }
-
-
-
-                    if (title != null) {
-
-                        TaskObject newMessage = new TaskObject(title, taskKey, date,projectKey,projectName);
-                        resualtsTask.add(newMessage);
-                        mTaskAdapter.notifyDataSetChanged();
-                    }
-                }
-
-
-
-            }
-
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                mTaskAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-    private void checkProjectExist(){
-        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseTask.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    Toast.makeText(getActivity(),"This project is deleted!",Toast.LENGTH_LONG).show();
-                    DatabaseReference mDatabaseDelete = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child(projectKey);
-                    mDatabaseDelete.removeValue();
-                    //finish();
+                resualtsTask.clear();
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    if (dataSnapshot.exists()) {
+                        String title = null;
+                        String date = null;
+                        String taskKey = data.getKey();
+
+                        if (data.child("title").getValue() != null) {
+                            title = data.child("title").getValue().toString();
+                        }
+
+                        if (data.child("date").getValue() != null) {
+                            date = data.child("date").getValue().toString();
+                        }
+
+                        if (title != null) {
+
+                            TaskObject newMessage = new TaskObject(title, taskKey, date,projectKey,projectName);
+                            resualtsTask.add(newMessage);
+                            mTaskAdapter.notifyDataSetChanged();
+                        }
+                    }
 
                 }
-
             }
 
             @Override
@@ -229,7 +148,10 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
 
             }
         });
+
     }
+
+
 
     public void moveTaskTo(String taskKey, String toPath, final int position) {
         final DatabaseReference databaseFromPath = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Open").child(taskKey);
@@ -279,7 +201,11 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
         i.putExtra("taskKey",taskKey);
         i.putExtra("projectKey",projectKey);
         i.putExtra("taskState","Open");
+        i.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(i);
+
+
+
     }
 
     @Override
@@ -299,6 +225,7 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
                     DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Open").child(key);
                     deletedNote.removeValue();
                     resualtsTask.remove(position);
+                    mTaskAdapter.notifyDataSetChanged();
                 }
 
                 if(item.getItemId() == (R.id.moveToActive)){
@@ -315,6 +242,23 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
 
 
         });
+    }
+
+    public void updateUi(){
+
+        resualtsTask.clear();
+        getNoteList();
+        mTaskAdapter.notifyDataSetChanged();
+        Log.d(TAG,"UpdateUi");
+    }
+
+    public void setRecyclerView(){
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setHasFixedSize(false);
+        mTaskLayoutManager = new GridLayoutManager(getActivity(),1);
+        mRecyclerView.setLayoutManager(mTaskLayoutManager);
+        mTaskAdapter = new TaskAdapter(getDataSetChat(), getActivity(),this);
+        mRecyclerView.setAdapter(mTaskAdapter);
     }
 
 }

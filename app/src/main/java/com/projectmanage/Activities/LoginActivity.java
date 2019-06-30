@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.projectmanage.R;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class LoginActivity extends AppCompatActivity {
 
     private Button mLogin;
@@ -45,18 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        fireAuthstlis = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = firebaseAuth.getInstance().getCurrentUser();
-                if(user != null){
-                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
 
-            }
-        };
 
         mLogin = findViewById(R.id.btn_login);
         mEmail = findViewById(R.id.input_email);
@@ -69,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
+                intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
         });
@@ -87,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(LoginActivity.this, "sign in error", Toast.LENGTH_SHORT).show();
                                     } else {
                                         mProgressBar.setVisibility(View.VISIBLE);
+                                        startActivity(new Intent(LoginActivity.this,MainActivity.class));
                                     }
                                 }
                             });
@@ -122,17 +115,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(fireAuthstlis);
-
-
-
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mAuth.removeAuthStateListener(fireAuthstlis);
 
     }
     @Override

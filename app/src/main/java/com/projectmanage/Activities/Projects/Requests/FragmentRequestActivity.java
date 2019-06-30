@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.projectmanage.Adapters.RequestAdapter;
 import com.projectmanage.Models.RequestObject;
 import com.projectmanage.R;
@@ -37,9 +38,7 @@ public class FragmentRequestActivity extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        requests.clear();
-        adapter.notifyDataSetChanged();
-        getRequestList();
+
     }
 
     @Nullable
@@ -58,59 +57,49 @@ public class FragmentRequestActivity extends Fragment {
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Requests");
 
-
-
         RecyclerView recyclerView = v.findViewById(R.id.rvRequests);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new RequestAdapter(requests, getActivity());
         recyclerView.setAdapter(adapter);
+        requests.clear();
+        getRequestList();
+        adapter.notifyDataSetChanged();
 
 
     }
-    private void getRequestList() {
-        mDatabase.addChildEventListener(new ChildEventListener() {
+
+    private void getRequestList(){
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                requests.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (dataSnapshot.exists()) {
 
-                    projectKey = dataSnapshot.getKey();
-                    requestFrom = dataSnapshot.child("requestFrom").getValue().toString();
-                    projectName = dataSnapshot.child("projectName").getValue().toString();
-                    RequestObject newMessage = new RequestObject(projectKey,requestFrom,projectName);
+                        projectKey = data.getKey();
+                        requestFrom = data.child("requestFrom").getValue().toString();
+                        projectName = data.child("projectName").getValue().toString();
+                        RequestObject newMessage = new RequestObject(projectKey,requestFrom,projectName);
 
-                    requests.add(newMessage);
-                    adapter.notifyDataSetChanged();
+                        requests.add(newMessage);
+                        adapter.notifyDataSetChanged();
 
 
+                    }
                 }
-
-            }
-
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                adapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                adapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                adapter.notifyDataSetChanged();
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-
-
-
     }
+
+
+
+
+
+
 }

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.AddFragment(new FragmentNoteActivity(), "Notes");
         tabLayout.setTabTextColors( Color.parseColor("#e0e0e0"),Color.parseColor("#FFFFFF") );
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
     }

@@ -114,7 +114,6 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.Chec
             updateData.child("text").setValue(text);
             updateData.child("checkBox").setValue(checkBool);
 
-
         }
 
 
