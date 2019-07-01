@@ -45,21 +45,19 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHolder> {
 
     @Override
     public void onBindViewHolder(final ProjectViewHolder holder, final int position) {
-        String projectKey = mData.get(position).getProjectKey();
-        String projectName = mData.get(position).getProjectName();
+        final String projectKey = mData.get(position).getProjectKey();
+        final String projectName = mData.get(position).getProjectName();
         holder.mProjectName.setText(projectName);
 
 
-        holder.mProjectName.setOnClickListener(new View.OnClickListener() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
+        mDatabaseDelete = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child(projectKey);
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                final String projectName = mData.get(position).getProjectName();
-                final String projectKey = mData.get(position).getProjectKey();
-                mDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
-                mDatabaseDelete = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child(projectKey);
-                mDatabase.addValueEventListener(new ValueEventListener() {
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                holder.mProjectName.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onClick(View view) {
                         if(!dataSnapshot.exists()){
                             Toast.makeText(context,projectName + " is deleted!",Toast.LENGTH_LONG).show();
                             mDatabaseDelete.removeValue();
@@ -72,32 +70,30 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHolder> {
                             i.putExtra("projectName", projectName);
                             context.startActivity(i);
                         }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     }
                 });
 
 
+            }
 
-
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
-
     }
+
+
+
+
+
 
     @Override
     public int getItemCount() {
         return mData.size();
     }
 
-  
+
 }
 
 
