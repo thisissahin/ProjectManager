@@ -46,12 +46,7 @@ public class FragmentProjectActivity extends Fragment {
     private static final String TAG = "MyProjectTag";
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG,"onStart");
 
-    }
 
     @Nullable
     @Override
@@ -74,7 +69,6 @@ public class FragmentProjectActivity extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ProjectAdd.class);
                 startActivity(intent);
-                adapter.notifyDataSetChanged();
             }
         });
 
@@ -93,15 +87,15 @@ public class FragmentProjectActivity extends Fragment {
 
 
     private void getProjectList(){
+
         mDatabaseProject = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects");
-        mDatabaseProject.keepSynced(true);
         mDatabaseProject.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 projectNames.clear();
+                adapter.notifyDataSetChanged();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (dataSnapshot.exists()) {
-
                         projectKey = data.getKey();
                         if(projectKey !=null){
                             projectName = data.child("projectName").getValue().toString();
@@ -109,7 +103,6 @@ public class FragmentProjectActivity extends Fragment {
                             projectNames.add(newMessage);
                             adapter.notifyDataSetChanged();
                         }
-
                     }
                 }
             }
@@ -121,12 +114,6 @@ public class FragmentProjectActivity extends Fragment {
         });
 
     }
-
-
-
-
-
-
 
     private ArrayList<ProjectObject> projectNames = new ArrayList<>();
 

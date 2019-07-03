@@ -33,12 +33,15 @@ public class MainTaskActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
     private String projectKey;
     private String projectName;
+    private String currentUserId;
+
     private static final String TAG = "TaskTag";
 
     DatabaseReference mDatabaseTask;
-    private String currentUserId;
+
 
 
     @Override
@@ -46,7 +49,6 @@ public class MainTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_task);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         if (savedInstanceState == null) {
@@ -87,21 +89,69 @@ public class MainTaskActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
+        checkProjectExist();
+    }
+
+    public void checkProjectExist(){
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
+        final DatabaseReference mDatabaseDelete = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child(projectKey);
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(!dataSnapshot.exists()){
+                    Toast.makeText(MainTaskActivity.this,projectName + " is deleted!",Toast.LENGTH_LONG).show();
+                    mDatabaseDelete.removeValue();
+                    finish();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
 
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.delete:
-                DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
-                deletedNote.removeValue();
-                deletedNote = FirebaseDatabase.getInstance().getReference().child("Users").
-                        child(currentUserId).child("Projects").child(projectKey);
-                deletedNote.removeValue();
-                finish();
+                DatabaseReference deleteProject = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).
+                        child("Users").child(currentUserId);
+                deleteProject.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Boolean admin = (Boolean) dataSnapshot.child("admin").getValue();
+                        DatabaseReference deleteProject = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
+
+                        if (admin == true){
+                            deleteProject.removeValue();
+                            deleteProject = FirebaseDatabase.getInstance().getReference().child("Users").
+                                    child(currentUserId).child("Projects").child(projectKey);
+                            deleteProject.removeValue();
+                            finish();
+                        }
+                        else{
+                            Toast.makeText(MainTaskActivity.this,"You dont have admin access",Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 return true;
             case R.id.memberAdd:
                 Intent i = new Intent(MainTaskActivity.this, ProjectAddUser.class);
@@ -118,8 +168,6 @@ public class MainTaskActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.project_menu, menu);
         return true;
     }
-
-
 
 
 

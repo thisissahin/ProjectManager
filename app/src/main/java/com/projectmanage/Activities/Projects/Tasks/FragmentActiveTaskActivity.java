@@ -114,6 +114,8 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 resualtsTask.clear();
+                mTaskAdapter.notifyDataSetChanged();
+
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     if (dataSnapshot.exists()) {
                         String title = null;
@@ -220,6 +222,8 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
                     DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Active").child(key);
                     deletedNote.removeValue();
                     resualtsTask.remove(position);
+                    mTaskAdapter.notifyDataSetChanged();
+
                 }
 
                 if(item.getItemId() == (R.id.moveToOpen)){

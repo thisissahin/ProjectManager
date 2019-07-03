@@ -113,6 +113,7 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 resualtsTask.clear();
+                mTaskAdapter.notifyDataSetChanged();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     if (dataSnapshot.exists()) {
                         String title = null;
@@ -212,10 +213,10 @@ public class FragmentCompletedTaskActivity extends Fragment implements TaskAdapt
                 String projectKey = resualtsTask.get(position).getProjectKey();
 
                 if (item.getItemId() == (R.id.delete)) {
-
                     DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks").child("Completed").child(key);
                     deletedNote.removeValue();
                     resualtsTask.remove(position);
+                    mTaskAdapter.notifyDataSetChanged();
                 }
 
                 if(item.getItemId() == (R.id.moveToOpen)){

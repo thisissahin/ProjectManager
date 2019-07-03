@@ -48,39 +48,17 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHolder> {
         final String projectKey = mData.get(position).getProjectKey();
         final String projectName = mData.get(position).getProjectName();
         holder.mProjectName.setText(projectName);
-
-
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
-        mDatabaseDelete = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).child("Projects").child(projectKey);
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        holder.mProjectName.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
-                holder.mProjectName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(!dataSnapshot.exists()){
-                            Toast.makeText(context,projectName + " is deleted!",Toast.LENGTH_LONG).show();
-                            mDatabaseDelete.removeValue();
-                            mData.remove(position);
-                            notifyDataSetChanged();
-                        }
-                        else{
-                            Intent i = new Intent(context, MainTaskActivity.class);
-                            i.putExtra("projectKey", projectKey);
-                            i.putExtra("projectName", projectName);
-                            context.startActivity(i);
-                        }
-                    }
-                });
-
-
+            public void onClick(View view) {
+                Intent i = new Intent(context, MainTaskActivity.class);
+                i.putExtra("projectKey", projectKey);
+                i.putExtra("projectName", projectName);
+                context.startActivity(i);
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
         });
+
     }
 
 

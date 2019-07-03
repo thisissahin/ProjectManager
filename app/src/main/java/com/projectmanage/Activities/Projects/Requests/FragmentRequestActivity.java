@@ -74,6 +74,7 @@ public class FragmentRequestActivity extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 requests.clear();
+                adapter.notifyDataSetChanged();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (dataSnapshot.exists()) {
 

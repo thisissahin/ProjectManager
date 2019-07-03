@@ -118,6 +118,7 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 resualtsTask.clear();
+                mTaskAdapter.notifyDataSetChanged();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     if (dataSnapshot.exists()) {
                         String title = null;

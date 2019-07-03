@@ -53,9 +53,11 @@ public class ProjectAdd extends AppCompatActivity {
                     newMessage.put("createdBy","me");
                     newMessage.put("projectName",projectName);
                     newMessageDb.setValue(newMessage);
-                    newMessageDb = projectDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Users");
+                    newMessageDb = projectDatabase = FirebaseDatabase.getInstance().getReference().child("Projects").
+                            child(projectKey).child("Users").child(currentUserId);
                     newMessage.clear();
                     newMessage.put("createdBy",currentUserId);
+                    newMessage.put("admin",true);
                     newMessageDb.setValue(newMessage);
                     Intent i = new Intent(ProjectAdd.this, MainTaskActivity.class);
                     i.putExtra("projectKey",projectKey);
