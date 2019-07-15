@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:textColor="@color/colorPrimaryDark"
                 android:hint="User Name" />
         </android.support.design.widget.TextInputLayout>
 
@@ -43,7 +44,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:hint="Email"
+                android:textColor="@color/colorPrimaryDark"
+                />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -56,7 +59,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"/>
+                android:hint="Password"
+                android:textColor="@color/colorPrimaryDark"
+                />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Signup Button -->
@@ -73,6 +78,7 @@
             android:layout_marginBottom="8dp"
             android:padding="12dp"
             android:text="Create Account"
+            android:textColor="@color/colorWhite"
             android:background="@color/colorPrimary"/>
 
         <ProgressBar

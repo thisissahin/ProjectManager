@@ -24,6 +24,7 @@ import com.projectmanage.R;
 
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
@@ -67,6 +68,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
                 String editKey = noteList.get(position).getNoteKey();
                 Intent i = new Intent(context, NoteActivity.class);
+                i.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
                 i.putExtra("key",editKey);
                 context.startActivity(i);
 

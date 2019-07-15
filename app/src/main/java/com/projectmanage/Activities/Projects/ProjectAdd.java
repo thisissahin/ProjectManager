@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class ProjectAdd extends AppCompatActivity {
 
-    EditText projectEditText;
+    EditText projectNameEditText,projectNoteEditText;
     Button   projetButton;
     DatabaseReference projectDatabase;
-    String projectName;
+    String projectName,projectNote;
     private String currentUserId;
 
     @Override
@@ -32,13 +32,15 @@ public class ProjectAdd extends AppCompatActivity {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-        projectEditText = findViewById(R.id.projectEditText);
+        projectNameEditText = findViewById(R.id.projectNameEditText);
+        projectNoteEditText = findViewById(R.id.projectNoteEditText);
         projetButton = findViewById(R.id.projectButton);
 
         projetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                projectName = projectEditText.getText().toString();
+                projectName = projectNameEditText.getText().toString();
+                projectNote = projectNoteEditText.getText().toString();
 
                 if(!projectName.isEmpty()){
                     projectDatabase =FirebaseDatabase.getInstance().getReference().child("Projects");
@@ -46,6 +48,7 @@ public class ProjectAdd extends AppCompatActivity {
                     DatabaseReference newMessageDb = projectDatabase.child(projectKey);
                     Map newMessage = new HashMap();
                     newMessage.put("projectName",projectName);
+                    newMessage.put("projectNote",projectNote);
                     newMessageDb.setValue(newMessage);
                     newMessageDb = projectDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId)
                             .child("Projects").child(projectKey);
@@ -57,7 +60,7 @@ public class ProjectAdd extends AppCompatActivity {
                             child(projectKey).child("Users").child(currentUserId);
                     newMessage.clear();
                     newMessage.put("createdBy",currentUserId);
-                    newMessage.put("admin",true);
+                    newMessage.put("Status","Admin");
                     newMessageDb.setValue(newMessage);
                     Intent i = new Intent(ProjectAdd.this, MainTaskActivity.class);
                     i.putExtra("projectKey",projectKey);

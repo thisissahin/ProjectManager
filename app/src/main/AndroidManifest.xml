@@ -12,13 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activities.Projects.Tasks.ProjectInfoActivity"></activity>
         <activity android:name=".Activities.Projects.Tasks.TaskAdd" />
         <activity android:name=".Activities.Projects.Tasks.MainTaskActivity" />
         <activity android:name=".Activities.Projects.ProjectAddUser" />
         <activity android:name=".Activities.Projects.ProjectAdd" />
-        <activity android:name=".Activities.MainActivity"
-            android:theme="@style/NoBarAppTheme"
-        />
+        <activity
+            android:name=".Activities.MainActivity"
+            android:theme="@style/NoBarAppTheme" />
         <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

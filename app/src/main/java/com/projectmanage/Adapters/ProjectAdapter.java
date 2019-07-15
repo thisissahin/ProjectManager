@@ -22,6 +22,8 @@ import com.projectmanage.R;
 
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHolder> {
 
     private List<ProjectObject> mData;
@@ -54,6 +56,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHolder> {
                 Intent i = new Intent(context, MainTaskActivity.class);
                 i.putExtra("projectKey", projectKey);
                 i.putExtra("projectName", projectName);
+                i.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
                 context.startActivity(i);
             }
 

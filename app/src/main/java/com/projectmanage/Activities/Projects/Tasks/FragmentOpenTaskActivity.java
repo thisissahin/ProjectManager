@@ -163,18 +163,11 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                databaseToPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                databaseToPath.setValue(dataSnapshot.getValue());
+                databaseFromPath.removeValue();
+                resualtsTask.remove(position);
+                mTaskAdapter.notifyDataSetChanged();
 
-                    @Override
-                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            databaseFromPath.removeValue();
-                            resualtsTask.remove(position);
-                            mTaskAdapter.notifyDataSetChanged();
-
-                    }
-
-
-                });
             }
 
             @Override
@@ -204,9 +197,6 @@ public class FragmentOpenTaskActivity extends Fragment implements TaskAdapter.On
         i.putExtra("taskState","Open");
         i.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(i);
-
-
-
     }
 
     @Override

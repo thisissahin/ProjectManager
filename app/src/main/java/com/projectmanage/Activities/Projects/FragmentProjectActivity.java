@@ -29,6 +29,8 @@ import com.projectmanage.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class FragmentProjectActivity extends Fragment {
 
     DatabaseReference mDatabaseProject;
@@ -68,6 +70,7 @@ public class FragmentProjectActivity extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ProjectAdd.class);
+                intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
         });

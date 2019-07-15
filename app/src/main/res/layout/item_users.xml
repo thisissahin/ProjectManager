@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal"
+    android:layout_marginHorizontal="5dp"
+
+
+
+    >
+
+
+    <TextView
+        android:id="@+id/userListNames"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:gravity = "center|start"
+        android:layout_gravity="center"
+        android:paddingHorizontal="10dp"
+        android:text="UserName"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="17sp"
+
+
+
+        />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:gravity="end"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="7dp"
+        android:text="Status"
+        android:id="@+id/userStatus"
+        android:textSize="17sp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"/>
+
+
+
+</LinearLayout>
+

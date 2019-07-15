@@ -158,18 +158,13 @@ public class FragmentActiveTaskActivity extends Fragment implements TaskAdapter.
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                databaseToPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                databaseToPath.setValue(dataSnapshot.getValue());
 
-                    @Override
-                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        databaseFromPath.removeValue();
-                        resualtsTask.remove(position);
-                        mTaskAdapter.notifyDataSetChanged();
-
-                    }
+                databaseFromPath.removeValue();
+                resualtsTask.remove(position);
+                mTaskAdapter.notifyDataSetChanged();
 
 
-                });
             }
 
             @Override

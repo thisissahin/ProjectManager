@@ -66,8 +66,6 @@ public class MainTaskActivity extends AppCompatActivity {
         }
         if(projectKey==null){
 
-
-
         }
         else {
             mDatabaseTask = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).child("Tasks");
@@ -125,16 +123,25 @@ public class MainTaskActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+
+            case R.id.projectInfo:
+                Intent intent = new Intent(MainTaskActivity.this,ProjectInfoActivity.class);
+                intent.putExtra("projectKey",projectKey);
+                intent.putExtra("projectName",projectName);
+                intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                return true;
+
             case R.id.delete:
                 DatabaseReference deleteProject = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey).
                         child("Users").child(currentUserId);
                 deleteProject.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Boolean admin = (Boolean) dataSnapshot.child("admin").getValue();
+                        String  userStatus = dataSnapshot.child("Status").getValue().toString();
                         DatabaseReference deleteProject = FirebaseDatabase.getInstance().getReference().child("Projects").child(projectKey);
 
-                        if (admin == true){
+                        if (userStatus == "Admin"){
                             deleteProject.removeValue();
                             deleteProject = FirebaseDatabase.getInstance().getReference().child("Users").
                                     child(currentUserId).child("Projects").child(projectKey);

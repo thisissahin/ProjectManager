@@ -53,7 +53,6 @@ public class TaskInfoActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     CheckListAdapter adapter;
     private ArrayList<CheckListObject> checkListTexts = new ArrayList<>();
-    private ArrayList<String> checkList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,12 +221,9 @@ public class TaskInfoActivity extends AppCompatActivity {
         else if(id == R.id.action_delete){
             DatabaseReference deletedNote = FirebaseDatabase.getInstance().getReference().child("Projects").
                     child(projectKey).child("Tasks").child(taskState).child(taskKey);
-            deletedNote.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    finish();
-                }
-            });
+            deletedNote.removeValue();
+            finish();
+
 
         }
         return super.onOptionsItemSelected(item);

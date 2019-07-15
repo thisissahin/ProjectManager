@@ -21,6 +21,7 @@
         android:layout_height="match_parent"
         android:background="@null"
         android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_gravity="center"
         android:id="@+id/checkListText"
         android:paddingVertical="5dp"

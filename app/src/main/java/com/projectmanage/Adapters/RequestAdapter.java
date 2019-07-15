@@ -82,7 +82,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                                                 child(requestKey).child("Users").child(currentUserId);
                                         newUser.clear();
                                         newUser.put("user",currentUserId);
-                                        newUser.put("admin",false);
+                                        newUser.put("Status","Member");
                                         projetDatabase.setValue(newUser);
                                         DatabaseReference deleteRequest = FirebaseDatabase.getInstance().getReference().child("Users").
                                                 child(currentUserId).child("Requests").child(requestKey);
